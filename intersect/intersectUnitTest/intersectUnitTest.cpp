@@ -100,9 +100,31 @@ namespace intersectUnitTest
 			s.insert(vec[0]); s.insert(vec[1]);
 			Assert::AreEqual((int)s.size(), (int)2);
 		}
-		TEST_METHOD(all)
+		TEST_METHOD(test_all)
 		{
-
+			cnt_l = 6;
+			line[1] = Line(Point(0, 0), Vector(2, 2), 'L');
+			line[2] = Line(Point(0, 2), Vector(2, -2), 'S');
+			line[3] = Line(Point(1, 2), Vector(-2, 1), 'S');
+			line[4] = Line(Point(-1, 0), Vector(3, 3), 'R');
+			line[5] = Line(Point(-1, 0), Vector(-1, 4), 'R');
+			line[6] = Line(Point(-2, 0), Vector(2, -1), 'R');
+			Assert::AreEqual((int)solveBasic(), (int)5);
+		}
+		TEST_METHOD(test_all2)
+		{
+			vec.clear();
+			cnt_c = 1;
+			circle[1] = Circle(Point(-2, 3), 2.);
+			cnt_l = 7;
+			line[1] = Line(Point(-2, 4), Vector(-1, -1), 'S');
+			line[2] = Line(Point(-3, 6), Vector(-1, -1), 'S');
+			line[3] = Line(Point(-2, 3), Vector(0, -3), 'S');
+			line[4] = Line(Point(0, 1), Vector(-4, 0), 'R');
+			line[5] = Line(Point(-3, 2), Vector(-2, 1), 'R');
+			line[6] = Line(Point(0, 6), Vector(1, 0), 'R');
+			line[7] = Line(Point(0, 0), Vector(0, 5), 'S');
+			Assert::AreEqual((int)solveBasic(), (int)4);
 		}
 	};
 }
