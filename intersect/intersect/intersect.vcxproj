@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{72026589-C3DC-42F3-9D09-F8F634BEE35C}</ProjectGuid>
+    <ProjectGuid>{12077B74-7735-4A65-9DD8-83D3FB0B22AA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>intersect</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>

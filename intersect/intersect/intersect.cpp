@@ -1,7 +1,5 @@
 ﻿#include "intersect.h"
 
-vector<Point> vec;
-
 bool pointOnSegment(const Point& A, const Line& L) {
 	if (L.tp == 'L') return true;
 	if (L.tp == 'R') {
@@ -82,87 +80,6 @@ int solveBasic() {
 	vec.erase(new_end, vec.end());
 	return vec.size();
 }
-
-/*double calY(const Point& A, const Point& B, double x) {
-	//(x - A.x) * (y - B.y) = (x - B.x) * (y - A.y)
-	double k1 = x - A.x, k2 = x - B.x;
-	return (k1 * B.y - k2 * A.y) / (k1 - k2);
-}
-
-void getPoints() {
-	Point B;
-	double lx = -1e11, rx = 1e11, ly, ry;
-	for (int i = 1; i <= cnt_l; ++i) {
-		B = line[i].u + line[i].v;
-		if (!dcmp(line[i].u.x - B.x)) {
-			pq.push(Node(Point(B.x, rx), i, 0));
-			pq.push(Node(Point(B.x, lx), i, 1));
-			leftPoint[i] = Point(B.x, rx);
-		}
-		else {
-			ly = calY(line[i].u, B, lx);
-			ry = calY(line[i].u, B, rx);
-			pq.push(Node(Point(lx, ly), i, 0));
-			pq.push(Node(Point(rx, ry), i, 1));
-			leftPoint[i] = Point(lx, ly);
-		}
-	}
-}
-
-set<Point> pset;
-
-void updateInsertion(int x, int y) {
-	if (lineIntersectionWithLine(line[x], line[y])) {
-		if (pset.find(globalIntersection) == pset.end()) {
-			pset.insert(globalIntersection);
-			pq.push(Node(globalIntersection, x, -y));
-		}
-	}
-}
-
-int scanLine() {
-	getPoints();
-	while (!pq.empty()) {
-		auto node = pq.top(); pq.pop();
-		if (node.tp == 0) {
-			auto node2 = Node2(node.x, node.id);
-			tree.insert(node2);
-			auto it = tree.find(node2);
-			if (it != tree.begin()) {
-				updateInsertion(prev(it)->id, it->id);
-			}
-			if (next(it) != tree.end()) {
-				updateInsertion(it->id, next(it)->id);
-			}
-		}
-		else if (node.tp == 1) {
-			auto node2 = Node2(leftPoint[node.id], node.id);
-			auto it = tree.find(node2);
-			if (it != tree.begin() && next(it) != tree.end()) {
-				updateInsertion(prev(it)->id, next(it)->id);
-			}
-			tree.erase(it);
-		}
-		else {
-			//node.id -> pl -node.tp -> pr
-			auto pl = Node2(leftPoint[node.id], node.id);
-			auto pr = Node2(leftPoint[-node.tp], -node.tp);
-			auto itl = tree.find(pl);
-			auto itr = tree.find(pr);
-			int needswap = 0;
-			if (itl != tree.begin()) {
-				++needswap;
-				updateInsertion(prev(itl)->id, itr->id);
-			}
-			if (next(itr) != tree.end()) {
-				++needswap;
-				updateInsertion(itl->id, next(itr)->id);
-			}
-			if (needswap == 2) swap(leftPoint[itl->id], leftPoint[itr->id]);
-		}
-	}
-	return s.size();
-}*/
 
 int main(int argc, char* argv[])
 {

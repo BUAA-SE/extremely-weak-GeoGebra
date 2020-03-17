@@ -30,19 +30,19 @@ struct Point {
 }leftPoint[maxn];
 typedef Point Vector;
 
-Vector operator + (const Vector& A, const Vector& B) { return Vector(A.x + B.x, A.y + B.y); }
-Vector operator - (const Vector& A, const Vector& B) { return Vector(A.x - B.x, A.y - B.y); }
-double operator * (const Vector& A, const Vector& B) { return A.x * B.x + A.y * B.y; }
-Point operator * (const Vector& A, const double& p) { return Point(A.x * p, A.y * p); }
-bool operator == (const Point& A, const Point& B) { return !dcmp(A.x - B.x) && !dcmp(A.y - B.y); }
-double operator ^ (const Vector& A, const Vector& B) { return A.x * B.y - A.y * B.x; }
+inline Vector operator + (const Vector& A, const Vector& B) { return Vector(A.x + B.x, A.y + B.y); }
+inline Vector operator - (const Vector& A, const Vector& B) { return Vector(A.x - B.x, A.y - B.y); }
+inline double operator * (const Vector& A, const Vector& B) { return A.x * B.x + A.y * B.y; }
+inline Point operator * (const Vector& A, const double& p) { return Point(A.x * p, A.y * p); }
+inline bool operator == (const Point& A, const Point& B) { return !dcmp(A.x - B.x) && !dcmp(A.y - B.y); }
+inline double operator ^ (const Vector& A, const Vector& B) { return A.x * B.y - A.y * B.x; }
 
 struct Line {
 	char tp;
 	Point u;
 	Vector v;
-	Line() { tp = 'L';  }
-	Line(Point u, Vector v) :u(u), v(v) { tp = 'L';  }
+	Line() { tp = 'L'; }
+	Line(Point u, Vector v) :u(u), v(v) { tp = 'L'; }
 	Line(Point u, Vector v, char tp) :u(u), v(v), tp(tp) {}
 	Point point(double t) const {
 		return u + v * t;
@@ -91,7 +91,7 @@ struct Node2 {
 };
 priority_queue<Node> pq;
 set<Node2> tree;
-
+vector<Point> vec;
 int scanLine();
 int solveBasic();
 void getPoints();
