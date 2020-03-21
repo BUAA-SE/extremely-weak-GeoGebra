@@ -18,6 +18,12 @@
     <ClCompile Include="intersect.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="core.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="computationalGeometry.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="line.h">
@@ -30,6 +36,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="circle.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="core.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="skipList.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="computationalGeometry.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

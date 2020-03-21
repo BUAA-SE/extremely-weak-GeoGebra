@@ -1,9 +1,13 @@
 ﻿#include "pch.h"
 #include "CppUnitTest.h"
-#include "../intersect/intersect.cpp"
+#include "../intersect/core.h"
+#include "../intersect/core.cpp"
+#include "../intersect/computationalGeometry.h"
+#include "../intersect/computationalGeometry.cpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
+Core core;
 namespace intersectUnitTest
 {
 	TEST_CLASS(intersectUnitTest)

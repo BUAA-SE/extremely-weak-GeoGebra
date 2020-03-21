@@ -22,4 +22,3 @@ const double eps = 1e-10;
 inline int dcmp(double x) {
 	return (x > eps) - (x < -eps);
 }
-mt19937 rnd((unsigned int) time(0));

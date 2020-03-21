@@ -147,13 +147,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="computationalGeometry.cpp" />
+    <ClCompile Include="core.cpp" />
     <ClCompile Include="intersect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="basic.h" />
     <ClInclude Include="circle.h" />
+    <ClInclude Include="computationalGeometry.h" />
+    <ClInclude Include="core.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="point.h" />
+    <ClInclude Include="skipList.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
