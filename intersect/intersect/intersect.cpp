@@ -13,6 +13,14 @@ public:
 
 	}
 	Point globalIntersection;
+	bool pointOnSegment2(const Point& A, const Line& L) {
+		if (dcmp((L.u - A) ^ ((L.u + L.v) - A))) return false;
+		if (L.tp == 'L') return true;
+		if (L.tp == 'R') {
+			return dcmp((A - L.u) * L.v) > 0;
+		}
+		return dcmp((A - L.u) * (A - (L.u + L.v))) < 0;
+	}
 	double calY(const Point& A, const Point& B, double x);
 	int lineIntersectionWithLine(const Line& L1, const Line& L2);
 	void lineIntersectionWithCircle(const Line& L, const Circle& C, vector<Point>& vec);
@@ -257,6 +265,12 @@ private:
 	computationalGeometry cG;
 	int cnt_c, cnt_l, cnt_lv, vis[maxn];
 	Line line[maxn], lineVertical[maxn];
+	int inrange(double x) {
+		return x > -1e5 && x < 1e5;
+	}
+	int isInt(double x) {
+		return !dcmp(x - (int)x);
+	}
 	void classify();
 	void transToSegment();
 	void updateInsertion(int x, int y);
@@ -267,15 +281,18 @@ public:
 		cnt_c = cnt_l = cnt_lv = 0;
 		memset(vis, 0, sizeof(vis));
 	}
+	void init() {
+		cnt_c = cnt_l = cnt_lv = 0;
+	}
 	int sweepLine();
 	int bruteForce();
 	bool needBruteForce();
 	vector<Line> getLines();
 	vector<Circle> getCircles();
-	void addCircle(const Point& C, const double& r);
-	void delCircle(const Point& C, const double& r);
-	void addLine(const Point& A, const Point& B, const char& tp);
-	void delLine(const Point& A, const Point& B, const char& tp);
+	int addCircle(const Point& C, const double& r);
+	int delCircle(const Point& C, const double& r);
+	int addLine(const Point& A, const Point& B, const char& tp);
+	int delLine(const Point& A, const Point& B, const char& tp);
 }core;
 
 void Core::classify() {
@@ -453,32 +470,99 @@ int Core::findCircle(const Point& C, const double& r) {
 	return 0;
 }
 
-void Core::addCircle(const Point& C, const double& r) {
+int Core::addCircle(const Point& C, const double& r) {
+	if (dcmp(r) <= 0) {
+		cerr << "the radius of the circle should be greater than 0" << endl;
+		return -1;
+	}
+	if (!isInt(r)) {
+		cerr << "the radius should be an integer" << endl;
+		return -2;
+	}
+	if (!inrange(C.x) || !inrange(C.y)) {
+		cerr << "the coordinate range should be within (-1e5, 1e5)" << endl;
+		return -3;
+	}
+	if (!isInt(C.x) || !isInt(C.y)) {
+		cerr << "the coordinates should be integers" << endl;
+		return -4;
+	}
+	if (cnt_c <= 1000) {
+		for (int i = 1; i <= cnt_c; ++i)
+			if (circle[i].c == C && !dcmp(circle[i].r - r)) {
+				cerr << "the current circle coincides with an existing circle" << endl;
+				return -5;
+			}
+	}
 	circle[++cnt_c] = Circle(C, r);
+	return 0;
 }
 
-void Core::delCircle(const Point& C, const double& r) {
+int Core::delCircle(const Point& C, const double& r) {
 	int pos = findCircle(C, r);
+	if (!pos) {
+		cerr << "the circle you want to delete does not exist" << endl;
+		return -1;
+	}
 	swap(circle[pos], circle[cnt_c--]);
+	return 0;
 }
 
 int Core::findLine(const Point& A, const Point& B, const char& tp) {
-	Vector v = B - A;
+	Line l = Line(A, B - A, tp);
 	for (int i = 1; i <= cnt_l; ++i) {
-		if (line[i].u == A && line[i].v == v && line[i].tp == tp) {
+		if (line[i] == l) {
 			return i;
 		}
 	}
 	return 0;
 }
 
-void Core::addLine(const Point& A, const Point& B, const char& tp) {
+int Core::addLine(const Point& A, const Point& B, const char& tp) {
+	if (tp != 'L' && tp != 'R' && tp != 'S') {
+		cerr << "wrong type" << endl;
+		return -1;
+	}
+	if (A == B) {
+		cerr << "two ends coincide" << endl;
+		return -2;
+	}
+	if (!inrange(A.x) || !inrange(A.y) || !inrange(B.x) || !inrange(B.y)) {
+		cerr << "the coordinate range should be within (-1e5, 1e5)" << endl;
+		return -3;
+	}
+	if (!isInt(A.x) || !isInt(A.y) || !isInt(B.x) || !isInt(B.y)) {
+		cerr << "the coordinates should be integers" << endl;
+		return -4;
+	}
+	if (cnt_l <= 1000) {
+		Vector v = B - A;
+		Line l = Line(A, B - A, tp);
+		for (int i = 1; i <= cnt_l; ++i) {
+			if (!dcmp(line[i].v ^ v)) {
+				if (cG.pointOnSegment2(line[i].u, l) || cG.pointOnSegment2(line[i].u + line[i].v, l)
+				||  cG.pointOnSegment2(A, line[i]) || cG.pointOnSegment2(B, line[i])) {
+					printf("%.10lf %.10lf\n", A.x, A.y); line[i].u.print(); (line[i].u + line[i].v).print();
+					cerr << cG.pointOnSegment2(line[i].u, l) << cG.pointOnSegment2(line[i].u + line[i].v, l) << endl;
+					cerr << cG.pointOnSegment2(A, line[i]) << cG.pointOnSegment2(B, line[i]) << endl;
+					cerr << "the current line coincides with an existing line" << endl;
+					return -5;
+				}
+			}
+		}
+	}
 	line[++cnt_l] = Line(A, B - A, tp);
+	return 0;
 }
 
-void Core::delLine(const Point& A, const Point& B, const char& tp) {
+int Core::delLine(const Point& A, const Point& B, const char& tp) {
 	int pos = findLine(A, B, tp);
+	if (!pos) {
+		cerr << "the line you want to delete does not exist" << endl;
+		return -1;
+	}
 	swap(line[pos], line[cnt_l--]);
+	return 0;
 }
 
 int Core::bruteForce() {
@@ -525,9 +609,16 @@ int main(int argc, char* argv[])
 			err = freopen_s(&stream, argv[i + 1], "r", stdin);
 	}
 	ios::sync_with_stdio(false);
+	core.addLine(Point(0, 0), Point(2, 2), 'R');
+	core.addLine(Point(1, 1), Point(3, 3), 'R');
+	exit(0);
 	cin >> n;
 	for (int i = 1; i <= n; ++i) {
 		cin >> tp;
+		if (strlen(tp) > 1) {
+			cerr << "wrong type" << endl;
+			continue;
+		}
 		if (tp[0] == 'C') {
 			A.read(); cin >> r;
 			core.addCircle(A, r);
