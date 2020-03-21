@@ -150,7 +150,10 @@
     <ClCompile Include="intersect.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="intersect.h" />
+    <ClInclude Include="basic.h" />
+    <ClInclude Include="circle.h" />
+    <ClInclude Include="line.h" />
+    <ClInclude Include="point.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
