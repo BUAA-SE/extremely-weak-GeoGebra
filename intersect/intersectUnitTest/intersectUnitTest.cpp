@@ -30,7 +30,7 @@ namespace intersectUnitTest
             Assert::AreEqual(core.addLine(Point(1, 1), Point(-1, -1), 'R'), -5);
             core.init();
             Assert::AreEqual(core.addLine(Point(0, 0), Point(2, 2), 'R'), 0);
-            Assert::AreEqual(core.addLine(Point(1, 1), Point(3, 3), 'R'), 0);
+            Assert::AreEqual(core.addLine(Point(0, 1), Point(3, 4), 'R'), 0);
             Assert::AreEqual(core.addLine(Point(-1, -1), Point(1, 1), 'R'), -5);
             Assert::AreEqual(core.addLine(Point(0, 0), Point(-1, -1), 'R'), 0);
             Assert::AreEqual(core.addLine(Point(0, 0), Point(10, 10), 'L'), -5);
