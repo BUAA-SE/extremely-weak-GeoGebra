@@ -8,9 +8,6 @@ private:
 		Node(Point x, int id, int tp) : x(x), id(id), tp(tp) { }
 		bool operator < (const Node& A) const {
 			if (!dcmp(x.x - A.x.x)) {
-				if (!(tp == A.tp || (abs(tp) < inf && abs(A.tp) < inf))) {
-					return tp > A.tp;
-				}
 				return dcmp(x.y - A.x.y) > 0;
 			}
 			return dcmp(x.x - A.x.x) > 0;
@@ -23,8 +20,8 @@ private:
 	Segment segment[maxn];
 	priority_queue<Node> pq;
 	computationalGeometry cG;
-	int cnt_c, cnt_l, cnt_lv, vis[maxn];
 	Line line[maxn], lineVertical[maxn];
+	int cnt_c, cnt_l, cnt_lv, vis[maxn];
 	int inrange(double x) {
 		return x > -1e5 && x < 1e5;
 	}

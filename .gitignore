@@ -35,5 +35,9 @@
 *.opendb
 *.log
 *.tlog
-
-intersect/.vs/*
+*.filters
+*.user
+*.vcxproj
+*.ilk
+*.pdb
+/.vs/

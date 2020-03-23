@@ -50,9 +50,12 @@ void Core::transToSegment() {
 }
 
 void Core::updateInsertion(int x, int y) {
-	if (vis[x] && vis[y]) return;
+	LL hsval = 1ll * min(x, y) * cnt_l + max(x, y);
+	if (vis[x] && vis[y]) {
+		hs.insert(hsval);
+		return;
+	}
 	if (cG.lineIntersectionWithLine(line[x], line[y])) {
-		LL hsval = 1ll * min(x, y) * cnt_l + max(x, y);
 		if (hs.find(hsval) == hs.end()) {
 			hs.insert(hsval);
 			pq.push(Node(cG.globalIntersection, x, y));
@@ -64,84 +67,81 @@ int Core::sweepLine() {
 	vec.clear();
 	classify();
 	transToSegment();
+	int cnt_line = 0;
 	while (!pq.empty()) {
-		auto node = pq.top(); pq.pop();
-		//		node.x.print();
-		//		printf("%d %d\n", node.id, node.tp);
-		if (node.tp == -inf) {
-			//left endpoint
-			sL.setX(node.x.x);
-			sL.insert(line[node.id]);
-			auto it = sL.find(line[node.id]);
-			if (sL.hasPre(it)) {
-				updateInsertion(sL.preLine(it), node.id);
-			}
-			if (sL.hasNext(it)) {
-				updateInsertion(node.id, sL.nextLine(it));
-			}
-		}
-		else if (node.tp == inf) {
-			//right endpoint
-			sL.setX(node.x.x);
-			auto it = sL.find(line[node.id]);
-			if (sL.hasPre(it) && sL.hasNext(it)) {
-				updateInsertion(sL.preLine(it), sL.nextLine(it));
-			}
-			sL.erase(line[node.id]);
-		}
-		else {
-			//intersect
-			vector<int> lines;
-			vec.push_back(node.x);
-			lines.push_back(node.id);
-			lines.push_back(node.tp);
-			while (!pq.empty()) {
-				auto top = pq.top();
-				if (abs(top.tp) < inf && top.x == node.x) {
-					pq.pop();
-					lines.push_back(top.id);
+		vector<int> lines;
+		auto node = pq.top();
+		sL.setX(node.x.x);
+		++cnt_line;
+		//node.x.print();
+		//printf("%d %d\n", node.id, node.tp);
+		sL.sp = -1;
+		while (!pq.empty()) {
+			auto top = pq.top();
+			if (top.x == node.x) {
+				pq.pop();
+				lines.push_back(top.id);
+				if (abs(top.tp) < inf) {
 					lines.push_back(top.tp);
 				}
+				else if (top.tp == inf) {
+					vis[top.id] = 2; //right point
+				}
 				else {
-					break;
+					vis[top.id] = 1; //left point
+					sL.insert(line[top.id]);
+					auto it = sL.find(line[top.id]);
+					if (sL.hasPre(it)) {
+						updateInsertion(sL.preLine(it), top.id);
+					}
+					if (sL.hasNext(it)) {
+						updateInsertion(top.id, sL.nextLine(it));
+					}
 				}
 			}
-			sL.revX();
-			sort(lines.begin(), lines.end(), [&](const int& a, const int& b) { return a == b ? 0 : sL.cmp(line[a], line[b]); });
-			auto new_end = unique(lines.begin(), lines.end());
-			lines.erase(new_end, lines.end());
-			sL.revX();
-			if (!dcmp(node.x.x - sL.getX())) {
-				for (int l : lines)
-					sL.rev[l] = --sL.ord;
-			}
-			for (int l : lines) {
-				vis[l] = 1;
-				sL.erase(line[l]);
-			}
-			if (dcmp(node.x.x - sL.getX())) {
-				for (int l : lines)
-					sL.rev[l] = --sL.ord;
-			}
-			for (int l : lines) {
-				sL.rev[l] *= -1;
-			}
-			sL.setX(node.x.x);
-			for (int l : lines) {
-				sL.insert(line[l]);
-				auto it = sL.find(line[l]);
-				if (sL.hasPre(it)) {
-					updateInsertion(sL.preLine(it), l);
-				}
-				if (sL.hasNext(it)) {
-					updateInsertion(l, sL.nextLine(it));
-				}
-			}
-			for (int l : lines) {
-				vis[l] = 0;
+			else {
+				break;
 			}
 		}
-		//		sL.printList();
+		sort(lines.begin(), lines.end());
+		auto new_end = unique(lines.begin(), lines.end());
+		lines.erase(new_end, lines.end());
+
+		if (lines.size() > 1) {
+			vec.push_back(node.x);
+		}
+		for (int l : lines) if (vis[l] < 2) {
+			vis[l] = 1;
+			sL.erase(line[l]);
+		}
+		for (int l : lines) if (vis[l] == 2) {
+			auto it = sL.find(line[l]);
+			if (sL.hasPre(it) && sL.hasNext(it)) {
+				int cnt = 0;
+				cnt += cG.lineIntersectionWithLine(line[l], line[sL.preLine(it)]);
+				Point p = cG.globalIntersection;
+				cnt += cG.lineIntersectionWithLine(line[l], line[sL.nextLine(it)]);
+				if (!(cnt == 2 && p == cG.globalIntersection)) {
+					updateInsertion(sL.preLine(it), sL.nextLine(it));
+				}
+			}
+			sL.erase(line[l]);
+		}
+		sL.sp = 1;
+		for (int l : lines) if (vis[l] < 2) {
+			sL.insert(line[l]);
+			auto it = sL.find(line[l]);
+			if (sL.hasPre(it)) {
+				updateInsertion(sL.preLine(it), l);
+			}
+			if (sL.hasNext(it)) {
+				updateInsertion(l, sL.nextLine(it));
+			}
+		}
+		for (int l : lines) {
+			vis[l] = 0;
+		}
+		//sL.printList();
 	}
 	sort(vec.begin(), vec.end());
 	auto new_end = unique(vec.begin(), vec.end());
@@ -246,7 +246,6 @@ int Core::addLine(const Point& A, const Point& B, const char& tp) {
 			if (!dcmp(line[i].v ^ v)) {
 				if (cG.pointOnSegment2(line[i].u, l) || cG.pointOnSegment2(line[i].u + line[i].v, l)
 					|| cG.pointOnSegment2(A, line[i]) || cG.pointOnSegment2(B, line[i])) {
-					printf("%.10lf %.10lf\n", A.x, A.y); line[i].u.print(); (line[i].u + line[i].v).print();
 					cerr << cG.pointOnSegment2(line[i].u, l) << cG.pointOnSegment2(line[i].u + line[i].v, l) << endl;
 					cerr << cG.pointOnSegment2(A, line[i]) << cG.pointOnSegment2(B, line[i]) << endl;
 					cerr << "the current line coincides with an existing line" << endl;
@@ -295,5 +294,5 @@ int Core::bruteForce() {
 }
 
 bool Core::needBruteForce() {
-	return cnt_l <= 1000 || cnt_c;
+	return cnt_l <= 2000 || cnt_c;
 }

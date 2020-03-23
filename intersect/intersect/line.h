@@ -20,6 +20,11 @@ struct Line {
 		}
 		return !dcmp(v.y * A.v.x - A.v.y * v.x) && !dcmp((u - A.u) ^ (u - (A.u + A.v)));
 	}
+	void print() {
+		u.print();
+		(u + v).print();
+		printf("id is : %d tp is : %c\n", id, tp);
+	}
 	Point point(double t) const {
 		return u + v * t;
 	}

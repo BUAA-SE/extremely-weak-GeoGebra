@@ -12,7 +12,8 @@ private:
 			lNext = rNext = dNext = 0;
 		}
 	}sL[maxn * MAX_LEVEL];
-	double scanX, preDiffX;
+	double scanX;
+	vector<int> upd;
 	computationalGeometry cG;
 	int cnt, top, tail, st[MAX_LEVEL + 2], stk[maxn * MAX_LEVEL];
 	int randLevel() {
@@ -31,25 +32,38 @@ private:
 		stk[++top] = p;
 	}
 public:
-	int ord;
-	int rev[maxn];
+	int sp;
+	int id2pos[maxn];
 	int cmp(const Line& L1, const Line& L2) {
 		if (L1.id == inf) return 0;
 		if (L1.id == L2.id) return 0;
-		cG.globalIntersection.x = -1e11;
-		cG.lineIntersectionWithLine(L1, L2);
-		if (!dcmp(cG.globalIntersection.x + 1e11) || dcmp(cG.globalIntersection.x - scanX)) {
-			double y1 = cG.calY(L1.u, L1.u + L1.v, scanX);
-			double y2 = cG.calY(L2.u, L2.u + L2.v, scanX);
-			return dcmp(y1 - y2) < 0;
+		if (dcmp(L1.v ^ L2.v)) {
+			if (L1.id < L2.id) {
+				Vector u = L1.u - L2.u;
+				double t = (L2.v ^ u) / (L1.v ^ L2.v);
+				cG.globalIntersection = L1.u + L1.v * t;
+			}
+			else {
+				Vector u = L2.u - L1.u;
+				double t = (L1.v ^ u) / (L2.v ^ L1.v);
+				cG.globalIntersection = L2.u + L2.v * t;
+			}
 		}
-		return rev[L1.id] > rev[L2.id];
+		else {
+			return dcmp(cG.calY(L1.u, L1.u + L1.v, scanX) - cG.calY(L2.u, L2.u + L2.v, scanX)) < 0;
+		}
+		if (dcmp(cG.globalIntersection.x - scanX)) {
+			return dcmp(cG.calY(L1.u, L1.u + L1.v, scanX) - cG.calY(L2.u, L2.u + L2.v, scanX)) < 0;
+		}
+		if (sp < 0) {
+			return dcmp(cG.calY(L1.u, L1.u + L1.v, -1e11) - cG.calY(L2.u, L2.u + L2.v, -1e11)) < 0;
+		}
+		return dcmp(cG.calY(L1.u, L1.u + L1.v, 1e11) - cG.calY(L2.u, L2.u + L2.v, 1e11)) < 0;
 	}
 	skipList() {
-		cnt = ord = top = 0;
-		scanX = preDiffX = -1e11;
+		cnt = top = sp = 0;
+		scanX = -1e11;
 		tail = newNode();
-		memset(rev, 0, sizeof(rev));
 		memset(stk, 0, sizeof(stk));
 		sL[tail].key.id = inf;
 		for (int i = 1; i <= MAX_LEVEL; ++i) {
@@ -59,38 +73,28 @@ public:
 		}
 	}
 	void printList() {
+		double lsty = -1e30;
 		printf("scanX is : %.16lf\n", scanX);
 		for (int i = sL[st[1]].rNext; i != tail; i = sL[i].rNext) {
-			printf("%.16lf(%d, %d) ", cG.calY(sL[i].key.u, sL[i].key.u + sL[i].key.v, scanX), sL[i].key.id, rev[sL[i].key.id]);
+			double newy = cG.calY(sL[i].key.u, sL[i].key.u + sL[i].key.v, scanX);
+			printf("%.16lf(%d) ", newy, sL[i].key.id);
+			lsty = newy;
 		}
-		printf("\n");
 	}
 	void setX(double x) {
-		if (dcmp(x - scanX)) {
-			preDiffX = scanX;
-		}
 		scanX = x;
 	}
 	double getX() {
 		return scanX;
 	}
-	int find(Line key) {
-		int p = st[MAX_LEVEL];
-		for (int i = MAX_LEVEL; i; --i) {
-			while (cmp(sL[sL[p].rNext].key, key)) {
-				p = sL[p].rNext;
-			}
-			if (i > 1) {
-				p = sL[p].dNext;
-			}
-		}
-		return sL[p].rNext;
+	inline int find(Line key) {
+		return id2pos[key.id];
 	}
 	void insert(Line key) {
 		int p = st[MAX_LEVEL];
 		int k = randLevel();
-		vector<int> upd;
 		int tmp, rNext;
+		upd.clear();
 		for (int i = MAX_LEVEL; i; --i) {
 			while (cmp(sL[sL[p].rNext].key, key)) {
 				p = sL[p].rNext;
@@ -103,13 +107,14 @@ public:
 			}
 			p = sL[p].dNext;
 		}
+		id2pos[key.id] = upd.back();
 		for (int i = 0; i < (int)upd.size() - 1; ++i) {
 			sL[upd[i]].dNext = upd[i + 1];
 		}
 	}
 	void erase(Line key) {
+		upd.clear();
 		int p = st[MAX_LEVEL];
-		vector<int> upd;
 		for (int i = MAX_LEVEL; i; --i) {
 			while (cmp(sL[sL[p].rNext].key, key)) {
 				p = sL[p].rNext;
@@ -121,7 +126,7 @@ public:
 		int y, z;
 		for (int x : upd) {
 			y = sL[x].rNext;
-			if (sL[y].key == key) {
+			if (sL[y].key.id == key.id) {
 				fd = 1;
 				z = sL[y].rNext;
 				sL[x].rNext = z;
@@ -129,9 +134,12 @@ public:
 				delNode(y);
 			}
 		}
-	}
-	void revX() {
-		swap(scanX, preDiffX);
+		/*if (!fd) {
+			cout << "GG:" << endl;
+			cout << sL[sL[y].lNext].key.id << " " << sL[y].key.id << endl;
+			printList();
+			exit(0);
+		}*/
 	}
 	bool hasPre(int p) {
 		return sL[p].lNext != st[1];

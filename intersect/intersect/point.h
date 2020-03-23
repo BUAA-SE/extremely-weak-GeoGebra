@@ -8,7 +8,7 @@ struct Point {
 		cin >> x >> y;
 	}
 	void print() {
-		printf("%.10lf %.10lf\n", x, y);
+		printf("%.16lf %.16lf\n", x, y);
 	}
 	bool operator < (const Point& B) const { return dcmp(x - B.x) < 0 || (!dcmp(x - B.x) && dcmp(y - B.y) < 0); }
 };

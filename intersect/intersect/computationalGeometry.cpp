@@ -20,15 +20,21 @@ double computationalGeometry::calY(const Point& A, const Point& B, double x) {
 	if (!dcmp(A.y - B.y)) {
 		return A.y;
 	}
-	double k1 = x - A.x, k2 = x - B.x;
-	return (k1 * B.y - k2 * A.y) / (k1 - k2);
+	return (x * (B.y - A.y) + (A.y * B.x - A.x * B.y)) / (B.x - A.x);
 }
 
 int computationalGeometry::lineIntersectionWithLine(const Line& L1, const Line& L2) {
 	if (!dcmp(L1.v ^ L2.v)) return 0;
-	Vector u = L1.u - L2.u;
-	double t = (L2.v ^ u) / (L1.v ^ L2.v);
-	globalIntersection = L1.u + L1.v * t;
+	if (L1.id < L2.id) {
+		Vector u = L1.u - L2.u;
+		double t = (L2.v ^ u) / (L1.v ^ L2.v);
+		globalIntersection = L1.u + L1.v * t;
+	}
+	else {
+		Vector u = L2.u - L1.u;
+		double t = (L1.v ^ u) / (L2.v ^ L1.v);
+		globalIntersection = L2.u + L2.v * t;
+	}
 	return pointOnSegment(globalIntersection, L1) && pointOnSegment(globalIntersection, L2);
 }
 
