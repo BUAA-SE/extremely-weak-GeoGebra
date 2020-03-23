@@ -40,4 +40,4 @@
 *.vcxproj
 *.ilk
 *.pdb
-/.vs/
+/intersect/.vs/
