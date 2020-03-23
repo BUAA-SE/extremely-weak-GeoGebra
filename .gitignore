@@ -40,4 +40,5 @@
 *.vcxproj
 *.ilk
 *.pdb
+*.idb
 /intersect/.vs/
