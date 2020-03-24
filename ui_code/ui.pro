@@ -25,15 +25,15 @@ HEADERS += \
 
 FORMS += \
     mainwindow.ui
-#LIBS += E:\6wenming\qt_pros\pro4\build-core-Desktop_Qt_5_14_1_MinGW_32_bit-Release\core.dll
-#INCLUDEPATH += E:\6wenming\qt_pros\pro4\core
+LIBS += E:\6wenming\qt_pros\pro4\build-core-Desktop_Qt_5_14_1_MinGW_32_bit-Release\core.dll
+INCLUDEPATH += E:\6wenming\qt_pros\pro4\core
 
 #LIBS += E:\6wenming\qt_pros\pro4\dll2\Dll2.dll
 #INCLUDEPATH +=E:\6wenming\qt_pros\pro4\dll2
 
 
-LIBS += E:\6wenming\qt_pros\pro4\dll1\core.dll
-INCLUDEPATH +=E:\6wenming\qt_pros\pro4\dll1
+#LIBS += E:\6wenming\qt_pros\pro4\dll1\core.dll
+#INCLUDEPATH +=E:\6wenming\qt_pros\pro4\dll1
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin

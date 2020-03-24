@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
            cir.x1 = ui->cir_x->value();
            cir.y1 = ui->cir_y->value();
            cir.x2 = ui->cir_r->value();
-           string name = "C "+to_string(cir.x1)+" "+to_string(cir.y1)+" "+to_string(cir.x2);
+           string name = "C "+to_string(int(cir.x1))+" "+to_string(int(cir.y1))+" "+to_string(int(cir.x2));
            QString  name2= QString::fromStdString(name);
            QListWidgetItem * item = new QListWidgetItem(name2);
            ui->listWidget->addItem(item);
@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
         l.y2 = ui->line_y2->value();
         string name = "";
         name.append(1,l.type);
-        name = name+" "+to_string(l.x1)+" "+to_string(l.y1)+" "+to_string(l.x2)+" "+to_string(l.y2);
+        name = name+" "+to_string(int(l.x1))+" "+to_string(int(l.y1))+" "+to_string(int(l.x2))+" "+to_string(int(l.y2));
         QString  name2= QString::fromStdString(name);
         QListWidgetItem * item = new QListWidgetItem(name2);
         ui->listWidget->addItem(item);
@@ -101,7 +101,10 @@ MainWindow::MainWindow(QWidget *parent)
            }
            int inter_num;
           // computationalGeometry cg;
-           inter_num = count_int(v);
+            solve l2;
+           points = l2.count(v);
+           inter_num = points.size();
+          // l.id = 0;
            QString st = QString::fromStdString(to_string(inter_num));
            ui->lineEdit->setText(st);
          //  cg.test();
@@ -121,7 +124,7 @@ MainWindow::MainWindow(QWidget *parent)
         in>>n;
         char type;
        // cout<<"n: "<<n<<endl;
-        double x1,x2,y1,y2 = 0;
+        int x1,x2,y1,y2 = 0;
         for(int i = 0;i<n;i++){
             in>>type;
            // cout<<"tp"<<type<<i<<endl;
@@ -276,12 +279,15 @@ void MainWindow::myPaint()
     painter.drawLine(width/2,0,width/2-7,7);
     painter.drawLine(width/2,0,width/2+7,7);
 
+
+
     //画线
     QPen pen3(Qt::cyan);
     pen3.setWidth(2);
     painter.setPen(pen3);
 
     line_qt temp,tmp2;
+
     for(int i = 0;i<int(this->lines.size());i++){
         temp = this->lines.at(i);
         switch(temp.type){
@@ -302,5 +308,13 @@ void MainWindow::myPaint()
             break;
         }
 
+    }
+    QPen pen4(Qt::red);
+    pen4.setWidth(4);
+    painter.setPen(pen4);
+ //   painter.drawPoint(100,100);
+    for(int i = 0;i<points.size();i++){
+           painter.drawPoint(points[i].first+width/2,height/2-points[i].second);
+         //cout<<points[i].first+width/2<<" "<<height/2-points[i].second<<endl;
     }
 }

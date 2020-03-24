@@ -72,15 +72,6 @@ public:
 			sL[st[i]].dNext = st[i - 1]; sL[st[i]].rNext = tail;
 		}
 	}
-	void printList() {
-		double lsty = -1e30;
-		printf("scanX is : %.16lf\n", scanX);
-		for (int i = sL[st[1]].rNext; i != tail; i = sL[i].rNext) {
-			double newy = cG.calY(sL[i].key.u, sL[i].key.u + sL[i].key.v, scanX);
-			printf("%.16lf(%d) ", newy, sL[i].key.id);
-			lsty = newy;
-		}
-	}
 	void setX(double x) {
 		scanX = x;
 	}
@@ -134,12 +125,6 @@ public:
 				delNode(y);
 			}
 		}
-		/*if (!fd) {
-			cout << "GG:" << endl;
-			cout << sL[sL[y].lNext].key.id << " " << sL[y].key.id << endl;
-			printList();
-			exit(0);
-		}*/
 	}
 	bool hasPre(int p) {
 		return sL[p].lNext != st[1];

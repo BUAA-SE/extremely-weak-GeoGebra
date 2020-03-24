@@ -6,6 +6,7 @@
 #include <vector>
 #include<fstream>
 #include"calc.h"
+//      #include"line.h"
 using namespace std;
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -25,6 +26,7 @@ public:
     //computationalGeometry c2;
     //skipList c3;
     string path;
+    vector< pair<double, double> > points;
    // Line l;
     int addL(line_qt l);
     //void MainWindow::myPaint()
