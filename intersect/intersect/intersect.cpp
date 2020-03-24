@@ -1,4 +1,5 @@
 ﻿#pragma once
+/*
 #include "core.h"
 Core core;
 
@@ -42,3 +43,5 @@ int main(int argc, char* argv[])
 	}
 	return 0;
 }
+
+*/
